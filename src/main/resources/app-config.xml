@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean name="serverDetails" id="serverDetails" class="com.lwl.contactbook.domain.ServerDetails">
+    	<property name="ip" value="192.1.1.200"/>
+    	<property name="provider" value="aws"/>
+    	<property name="adminDetails" ref="adminDetails"/>
+    </bean>
+	
+	<bean name="adminDetails" class="com.lwl.contactbook.domain.AdminDetails">
+		<property name="name" value="John"/>
+		<property name="mobile" value="98765678904"/>
+	</bean>
+</beans>

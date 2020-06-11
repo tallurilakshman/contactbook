@@ -1,0 +1,31 @@
+--- 
+contactdata: 
+  contacts: 
+    - 
+      address: 
+        city: Bangalore
+        state: KA
+      email: krish.t@gmail.com
+      mobile: 9988998899
+      name: Krish
+    - 
+      address: 
+        city: Bangalore
+        state: KA
+      email: manoj.pvn@gmail.com
+      mobile: 9988998891
+      name: Manoj
+    - 
+      address: 
+        city: Guntur
+        state: AP
+      email: lakshman.a@gmail.com
+      mobile: 9988998892
+      name: Lakshman
+    - 
+      address: 
+        city: Houser
+        state: TN
+      email: balu.t@gmail.com
+      mobile: 9988998893
+      name: Balu
