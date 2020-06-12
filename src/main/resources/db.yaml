@@ -1,4 +1,0 @@
-db:
- username: lakshman
- password: lakshman
- url: jdbc:mysql://localhost:3306/batch_4
