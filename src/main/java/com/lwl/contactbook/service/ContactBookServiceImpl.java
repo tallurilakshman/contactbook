@@ -1,6 +1,7 @@
 package com.lwl.contactbook.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -16,8 +17,6 @@ import com.lwl.contactbook.dto.AddressDTO;
 import com.lwl.contactbook.dto.ContactDTO;
 import com.lwl.contactbook.dto.ContactWithAddressDTO;
 
-import lombok.extern.java.Log;
-
 @Service
 
 public class ContactBookServiceImpl implements ContactBookService {
@@ -32,14 +31,13 @@ public class ContactBookServiceImpl implements ContactBookService {
 
 	@Override
 	public List<ContactWithAddressDTO> getAllContacts() {
-		// TODO Auto-generated method stub
-		return null;
+		return contactDao.getAllContacts();
 	}
 
 	@Override
 	public List<ContactWithAddressDTO> search(String str) {
-		// TODO Auto-generated method stub
-		return null;
+		Assert.notNull(str, "Search string can't be null");
+		return contactDao.search(str);
 	}
 
 	@Override
@@ -60,50 +58,101 @@ public class ContactBookServiceImpl implements ContactBookService {
 
 	@Override
 	public boolean deleteContact(int cid) {
-		// TODO Auto-generated method stub
-		return false;
+		Assert.notNull(cid, "Cid can't be null");
+		boolean delete = contactDao.deleteContact(cid);
+		return delete;
 	}
 
 	@Override
-	public ContactDTO updateContact(ContactDTO contact) {
-		// TODO Auto-generated method stub
-		return null;
+	public ContactDTO updateContact(ContactDTO contactDto) {
+		Assert.notNull(contactDto, "Contact object can't be null");
+		Assert.notNull(contactDto.getName(), "Contact name can't be null or empty");
+		Assert.notNull(contactDto.getMobile(), "Contact mobile can't be null or empty");
+		Contact contact = modelMapper.map(contactDto, Contact.class);
+		contact = contactDao.updateContact(contact);
+		if (contact != null) {
+			log.info("Contact is added with id:{}", contact.getCid());
+			contactDto = modelMapper.map(contact, ContactDTO.class);
+		} else {
+			log.error("When user trying to add contact, It Couldn't be add");
+		}
+		return contactDto;
 	}
 
 	@Override
 	public ContactDTO getContact(int cid) {
-		// TODO Auto-generated method stub
-		return null;
+		Assert.notNull(cid, "Cid can't be null");
+		Contact contact = contactDao.getContact(cid);
+		ContactDTO contactDto = null;
+		if (contact != null) {
+			log.info("Contact is added with id:{}", contact.getCid());
+			contactDto = modelMapper.map(contact, ContactDTO.class);
+		} else {
+			log.error("When user trying to add contact, It Couldn't be add");
+		}
+		return contactDto;
 	}
 
 	@Override
 	public AddressDTO addAddress(AddressDTO addressDto) {
-		// TODO Auto-generated method stub
-		return null;
+		Assert.notNull(addressDto, "Contact object can't be null");
+		Assert.notNull(addressDto.getCity(), "City can't be null or empty");
+		Assert.notNull(addressDto.getState(), "State can't be null or empty");
+		Address address = modelMapper.map(addressDto, Address.class);
+		address = contactDao.addAddress(address);
+		if (address != null) {
+			log.info("Address is added with id:{}", address.getCid());
+			addressDto = modelMapper.map(address, AddressDTO.class);
+		} else {
+			log.error("When user trying to add contact, It Couldn't be add");
+		}
+		return addressDto;
 	}
 
 	@Override
 	public List<AddressDTO> searchByCity(String str) {
-		// TODO Auto-generated method stub
-		return null;
+		Assert.notNull(str, "Search string can't be null");
+		List<Address> address = contactDao.searchByCity(str);
+
+		List<AddressDTO> addressDTOs = address.stream().map(adr -> modelMapper.map(adr, AddressDTO.class))
+				.collect(Collectors.toList());
+		return addressDTOs;
 	}
 
 	@Override
 	public boolean deleteAddress(int aid) {
-		// TODO Auto-generated method stub
-		return false;
+		Assert.notNull(aid, "Cid can't be null");
+		return contactDao.deleteAddress(aid);
 	}
 
 	@Override
-	public AddressDTO updateAddress(AddressDTO adddressDto) {
-		// TODO Auto-generated method stub
-		return null;
+	public AddressDTO updateAddress(AddressDTO addressDto) {
+		Assert.notNull(addressDto, "Contact object can't be null");
+		Assert.notNull(addressDto.getCity(), "City can't be null or empty");
+		Assert.notNull(addressDto.getState(), "State can't be null or empty");
+		Address address = modelMapper.map(addressDto, Address.class);
+		address = contactDao.updateAddress(address);
+		if (address != null) {
+			log.info("Address is added with id:{}", address.getCid());
+			addressDto = modelMapper.map(address, AddressDTO.class);
+		} else {
+			log.error("When user trying to add contact, It Couldn't be add");
+		}
+		return addressDto;
 	}
 
 	@Override
 	public AddressDTO getAddress(int aid) {
-		// TODO Auto-generated method stub
-		return null;
+		Assert.notNull(aid, "Aid can't be null");
+		Address address = contactDao.getAddress(aid);
+		AddressDTO addressDto = null;
+		if (address != null) {
+			log.info("Contact is added with id:{}", address.getAid());
+			addressDto = modelMapper.map(address, AddressDTO.class);
+		} else {
+			log.error("When user trying to add contact, It Couldn't be add");
+		}
+		return addressDto;
 	}
 
 }
