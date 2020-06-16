@@ -2,6 +2,7 @@ package com.lwl.contactbook.service.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -34,7 +35,9 @@ public class ContactBookServiceTest {
 	@BeforeEach
 	public void before() {
 		try {
-			ScriptUtils.executeSqlScript(jdbcTemplate.getDataSource().getConnection(), new ClassPathResource(script));
+			Connection con = jdbcTemplate.getDataSource().getConnection();
+			ScriptUtils.executeSqlScript(con, new ClassPathResource(script));
+			con.close();
 		} catch (ScriptException | SQLException e) {
 			e.printStackTrace();
 		}
@@ -43,11 +46,16 @@ public class ContactBookServiceTest {
 	@AfterEach
 	public void after() {
 		try {
-			ScriptUtils.executeSqlScript(jdbcTemplate.getDataSource().getConnection(), new ClassPathResource(delete));
+			Connection con = jdbcTemplate.getDataSource().getConnection();
+
+			ScriptUtils.executeSqlScript(con, new ClassPathResource(delete));
+
+			con.close();
 		} catch (ScriptException | SQLException e) {
 			e.printStackTrace();
 		}
 	}
+
 
 	@Test
 	public void getAllContacts() {

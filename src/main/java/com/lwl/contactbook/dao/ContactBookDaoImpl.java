@@ -16,12 +16,22 @@ public class ContactBookDaoImpl implements ContactBookDao {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	private static final String CONTACT_WITH_ADDRESS = "SELECT c.cid,name,email,mobile, city,state FROM contact c, address a where c.cid=a.cid";
+	private static final String SEARCH = "SELECT c.cid,name,email,mobile, city,state FROM address a inner join contact c on c.cid=a.cid and city= ?";
+	private static final String ADDCONTACT = "insert into contact(cid,name,email,mobile) values(?,?,?,?)";
+	private static final String DELETE_CONTACT = "delete from contact where cid=?";
+	private static final String UPDATE_CONTACT = "UPDATE contact SET name = ?, mobile= ?, email=? WHERE cid = ?";
+	private static final String GET_CONTACT = "SELECT * FROM contact WHERE cid = ?";
+	private static final String ADD_ADDRESS = "INSERT INTO address(aid, city, state,cid) values(?,?,?,?)";
+	private static final String SEARCH_BY_CITY = "SELECT * FROM address where city=?";
+	private static final String DELETE_ADDRESS = "delete from address where aid=?";
+	private static final String UPDATE_ADDRESS = "UPDATE address SET city = ?, state= ?, cid=? WHERE aid = ?";
+	private static final String GET_ADDRESS = "SELECT * FROM address WHERE aid = ?";
 
 	@Override
 	public List<ContactWithAddressDTO> getAllContacts() {
-		String contactwithaddress = "SELECT c.cid,name,email,mobile, city,state FROM contact c, address a where c.cid=a.cid";
 
-		List<ContactWithAddressDTO> contactWithAddressDTOs = jdbcTemplate.query(contactwithaddress,
+		List<ContactWithAddressDTO> contactWithAddressDTOs = jdbcTemplate.query(CONTACT_WITH_ADDRESS,
 				new BeanPropertyRowMapper<ContactWithAddressDTO>(ContactWithAddressDTO.class));
 
 		return contactWithAddressDTOs;
@@ -29,15 +39,14 @@ public class ContactBookDaoImpl implements ContactBookDao {
 
 	@Override
 	public List<ContactWithAddressDTO> search(String str) {
-		String sql = "SELECT c.cid,name,email,mobile, city,state FROM address a inner join contact c on c.cid=a.cid and city= ?";
-		return jdbcTemplate.queryForList(sql, ContactWithAddressDTO.class, str);
+		return jdbcTemplate.queryForList(SEARCH, ContactWithAddressDTO.class, str);
 
 	}
 
 	@Override
 	public Contact addContact(Contact contact) {
-		int rowsChanged = jdbcTemplate.update("insert into contact(cid,name,email,mobile) values(?,?,?,?)",
-				contact.getCid(), contact.getName(), contact.getMobile(), contact.getEmail());
+		int rowsChanged = jdbcTemplate.update(ADDCONTACT, contact.getCid(), contact.getName(), contact.getMobile(),
+				contact.getEmail());
 		System.out.println(rowsChanged);
 		if (rowsChanged != 0) {
 			System.out.println("Done Man!!");
@@ -49,7 +58,7 @@ public class ContactBookDaoImpl implements ContactBookDao {
 	@Override
 	public boolean deleteContact(int cid) {
 
-		int rowsChanged = jdbcTemplate.update("delete from contact where cid=?", cid);
+		int rowsChanged = jdbcTemplate.update(DELETE_CONTACT, cid);
 		if (rowsChanged != 0) {
 			return true;
 		}
@@ -58,9 +67,8 @@ public class ContactBookDaoImpl implements ContactBookDao {
 
 	@Override
 	public Contact updateContact(Contact contact) {
-		String sql = "UPDATE contact SET name = ?, mobile= ?, email=? WHERE cid = ?";
-		int rowsChanged = jdbcTemplate.update(sql, contact.getName(), contact.getMobile(), contact.getEmail(),
-				contact.getCid());
+		int rowsChanged = jdbcTemplate.update(UPDATE_CONTACT, contact.getName(), contact.getMobile(),
+				contact.getEmail(), contact.getCid());
 		if (rowsChanged != 0) {
 			return contact;
 		}
@@ -69,14 +77,14 @@ public class ContactBookDaoImpl implements ContactBookDao {
 
 	@Override
 	public Contact getContact(int cid) {
-		String sql = "SELECT * FROM contact WHERE cid = ?";
-		return jdbcTemplate.queryForObject(sql, new Object[] { cid }, new BeanPropertyRowMapper<Contact>(Contact.class));
+		return jdbcTemplate.queryForObject(GET_CONTACT, new Object[] { cid },
+				new BeanPropertyRowMapper<Contact>(Contact.class));
 	}
 
 	@Override
 	public Address addAddress(Address address) {
-		int rowsChanged = jdbcTemplate.update("INSERT INTO address(aid, city, state,cid) values(?,?,?,?)",
-				address.getAid(), address.getCity(), address.getState(),address.getCid());
+		int rowsChanged = jdbcTemplate.update(ADD_ADDRESS, address.getAid(), address.getCity(), address.getState(),
+				address.getCid());
 		if (rowsChanged != 0) {
 			return address;
 		}
@@ -86,13 +94,12 @@ public class ContactBookDaoImpl implements ContactBookDao {
 	@Override
 	public List<Address> searchByCity(String str) {
 
-		String sql = "SELECT * FROM address where city=?";
-		return jdbcTemplate.queryForList(sql, Address.class, str);
+		return jdbcTemplate.queryForList(SEARCH_BY_CITY, Address.class, str);
 	}
 
 	@Override
 	public boolean deleteAddress(int aid) {
-		int rowsChanged = jdbcTemplate.update("delete from address where aid=?", aid);
+		int rowsChanged = jdbcTemplate.update(DELETE_ADDRESS, aid);
 		if (rowsChanged != 0) {
 			return true;
 		}
@@ -101,9 +108,8 @@ public class ContactBookDaoImpl implements ContactBookDao {
 
 	@Override
 	public Address updateAddress(Address address) {
-		String sql = "UPDATE address SET city = ?, state= ?, cid=? WHERE aid = ?";
 
-		int rowsChanged = jdbcTemplate.update(sql, address.getCity(), address.getState(), address.getCid(),
+		int rowsChanged = jdbcTemplate.update(UPDATE_ADDRESS, address.getCity(), address.getState(), address.getCid(),
 				address.getAid());
 		if (rowsChanged != 0) {
 			return address;
@@ -113,8 +119,8 @@ public class ContactBookDaoImpl implements ContactBookDao {
 
 	@Override
 	public Address getAddress(int aid) {
-		String sql = "SELECT * FROM address WHERE aid = ?";
-		return jdbcTemplate.queryForObject(sql, new Object[] { aid }, new BeanPropertyRowMapper<Address>(Address.class));
+		return jdbcTemplate.queryForObject(GET_ADDRESS, new Object[] { aid },
+				new BeanPropertyRowMapper<Address>(Address.class));
 	}
 
 }
