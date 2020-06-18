@@ -14,7 +14,7 @@ public interface ContactBookService {
 	public boolean deleteContact(int cid);
 	public ContactDTO updateContact(ContactDTO contact);
 	public ContactDTO getContact(int cid);
-	public AddressDTO addAddress(AddressDTO address);
+	public AddressDTO addAddress(AddressDTO address,int cid);
 	public List<AddressDTO> searchByCity(String str);
 	public boolean deleteAddress(int aid);
 	public AddressDTO updateAddress(AddressDTO adddress);

@@ -67,7 +67,7 @@ public class ContactBookDaoTest {
 
 	@Test
 	public void addContact() {
-		Contact expected = new Contact(6, "pradeep", "pradeep@gmail.com", "353747646446");
+		Contact expected = new Contact();
 		Contact actual = contactDao.addContact(expected);
 		assertEquals(expected, actual);
 		System.out.println("Done addContact");
@@ -84,7 +84,7 @@ public class ContactBookDaoTest {
 
 	@Test
 	public void updateContact() {
-		Contact expected = new Contact(1, "Pradeep T", "pradeep@gmail.com", "353747646446");
+		Contact expected = new Contact();
 		Contact actual = contactDao.updateContact(expected);
 		assertEquals(expected, actual);
 		System.out.println("Done updateContacts");
@@ -102,8 +102,8 @@ public class ContactBookDaoTest {
 
 	@Test
 	public void addAddress() {
-		Address expected = new Address(6, "Kansas", "KS", 2);
-		Address actual = contactDao.addAddress(expected);
+		Address expected = new Address();
+		Address actual = contactDao.addAddress(expected,1);
 		assertEquals(expected, actual);
 		System.out.println("Done addAddress");
 
@@ -119,7 +119,7 @@ public class ContactBookDaoTest {
 
 	@Test
 	public void updateAddress() {
-		Address expected = new Address(1, "Kansas", "KS", 2);
+		Address expected = new Address();
 		Address actual = contactDao.updateAddress(expected);
 		assertEquals(expected, actual);
 		System.out.println("Done UpdateAddress");

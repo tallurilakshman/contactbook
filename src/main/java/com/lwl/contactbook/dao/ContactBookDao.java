@@ -19,7 +19,7 @@ public interface ContactBookDao {
 
 	public Contact getContact(int cid);
 
-	public Address addAddress(Address address);
+	public Address addAddress(Address address,int cid);
 
 	public List<Address> searchByCity(String str);
 
