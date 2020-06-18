@@ -94,14 +94,14 @@ public class ContactBookServiceImpl implements ContactBookService {
 	}
 
 	@Override
-	public AddressDTO addAddress(AddressDTO addressDto) {
+	public AddressDTO addAddress(AddressDTO addressDto,int cid) {
 		Assert.notNull(addressDto, "Contact object can't be null");
 		Assert.notNull(addressDto.getCity(), "City can't be null or empty");
 		Assert.notNull(addressDto.getState(), "State can't be null or empty");
 		Address address = modelMapper.map(addressDto, Address.class);
-		address = contactDao.addAddress(address);
+		address = contactDao.addAddress(address,cid);
 		if (address != null) {
-			log.info("Address is added with id:{}", address.getCid());
+		
 			addressDto = modelMapper.map(address, AddressDTO.class);
 		} else {
 			log.error("When user trying to add contact, It Couldn't be add");
@@ -133,7 +133,6 @@ public class ContactBookServiceImpl implements ContactBookService {
 		Address address = modelMapper.map(addressDto, Address.class);
 		address = contactDao.updateAddress(address);
 		if (address != null) {
-			log.info("Address is added with id:{}", address.getCid());
 			addressDto = modelMapper.map(address, AddressDTO.class);
 		} else {
 			log.error("When user trying to add contact, It Couldn't be add");

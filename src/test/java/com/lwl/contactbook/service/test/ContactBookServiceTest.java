@@ -99,7 +99,7 @@ public class ContactBookServiceTest {
 
 	public void addAddress() {
 		AddressDTO expected = new AddressDTO(6, "Kansas", "KS", 2);
-		AddressDTO actual = contactBookService.addAddress(expected);
+		AddressDTO actual = contactBookService.addAddress(expected,1);
 		assertEquals(expected, actual);
 		System.out.println("Done addAddress");
 	}

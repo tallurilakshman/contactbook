@@ -1,126 +1,100 @@
 package com.lwl.contactbook.dao;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.lwl.contactbook.domain.Address;
 import com.lwl.contactbook.domain.Contact;
 import com.lwl.contactbook.dto.ContactWithAddressDTO;
+import com.lwl.contactbook.repo.AddressRepo;
+import com.lwl.contactbook.repo.ContactRepo;
 
 @Repository
 public class ContactBookDaoImpl implements ContactBookDao {
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
-	private static final String CONTACT_WITH_ADDRESS = "SELECT c.cid,name,email,mobile, city,state FROM contact c, address a where c.cid=a.cid";
-	private static final String SEARCH = "SELECT c.cid,name,email,mobile, city,state FROM address a inner join contact c on c.cid=a.cid and city= ?";
-	private static final String ADDCONTACT = "insert into contact(cid,name,email,mobile) values(?,?,?,?)";
-	private static final String DELETE_CONTACT = "delete from contact where cid=?";
-	private static final String UPDATE_CONTACT = "UPDATE contact SET name = ?, mobile= ?, email=? WHERE cid = ?";
-	private static final String GET_CONTACT = "SELECT * FROM contact WHERE cid = ?";
-	private static final String ADD_ADDRESS = "INSERT INTO address(aid, city, state,cid) values(?,?,?,?)";
-	private static final String SEARCH_BY_CITY = "SELECT * FROM address where city=?";
-	private static final String DELETE_ADDRESS = "delete from address where aid=?";
-	private static final String UPDATE_ADDRESS = "UPDATE address SET city = ?, state= ?, cid=? WHERE aid = ?";
-	private static final String GET_ADDRESS = "SELECT * FROM address WHERE aid = ?";
+	private ContactRepo contactRepo;
+
+	@Autowired
+	private AddressRepo addressRepo;
+
+	private Logger log = LoggerFactory.getLogger(ContactBookDaoImpl.class);
 
 	@Override
 	public List<ContactWithAddressDTO> getAllContacts() {
-
-		List<ContactWithAddressDTO> contactWithAddressDTOs = jdbcTemplate.query(CONTACT_WITH_ADDRESS,
-				new BeanPropertyRowMapper<ContactWithAddressDTO>(ContactWithAddressDTO.class));
-
-		return contactWithAddressDTOs;
-	}
-
-	@Override
-	public List<ContactWithAddressDTO> search(String str) {
-		return jdbcTemplate.queryForList(SEARCH, ContactWithAddressDTO.class, str);
-
-	}
-
-	@Override
-	public Contact addContact(Contact contact) {
-		int rowsChanged = jdbcTemplate.update(ADDCONTACT, contact.getCid(), contact.getName(), contact.getMobile(),
-				contact.getEmail());
-		System.out.println(rowsChanged);
-		if (rowsChanged != 0) {
-			System.out.println("Done Man!!");
-			return contact;
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean deleteContact(int cid) {
+	public List<ContactWithAddressDTO> search(String str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-		int rowsChanged = jdbcTemplate.update(DELETE_CONTACT, cid);
-		if (rowsChanged != 0) {
-			return true;
-		}
+	@Override
+	public Contact addContact(Contact contact) {
+		contact = contactRepo.save(contact);
+		log.info("Contact is added with id :{}", contact.getCid());
+		return contact;
+	}
+
+	@Override
+	public boolean deleteContact(int cid) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public Contact updateContact(Contact contact) {
-		int rowsChanged = jdbcTemplate.update(UPDATE_CONTACT, contact.getName(), contact.getMobile(),
-				contact.getEmail(), contact.getCid());
-		if (rowsChanged != 0) {
-			return contact;
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Contact getContact(int cid) {
-		return jdbcTemplate.queryForObject(GET_CONTACT, new Object[] { cid },
-				new BeanPropertyRowMapper<Contact>(Contact.class));
-	}
-
-	@Override
-	public Address addAddress(Address address) {
-		int rowsChanged = jdbcTemplate.update(ADD_ADDRESS, address.getAid(), address.getCity(), address.getState(),
-				address.getCid());
-		if (rowsChanged != 0) {
-			return address;
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Address> searchByCity(String str) {
+	public Address addAddress(Address address, int cid) {
+		Optional<Contact> obj = contactRepo.findById(cid);
+    	Contact contact = Optional.ofNullable(obj).flatMap(e -> e).orElseThrow(() -> new IllegalArgumentException("Contact id is not found"));
+		address = addressRepo.save(address);
+		log.info("Contact address is added with id :{}",address.getAid());
+		contact.setAddress(address);
+		contactRepo.save(contact);
+		return address;
+	}
 
-		return jdbcTemplate.queryForList(SEARCH_BY_CITY, Address.class, str);
+	@Override
+	public List<Address> searchByCity(String str) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public boolean deleteAddress(int aid) {
-		int rowsChanged = jdbcTemplate.update(DELETE_ADDRESS, aid);
-		if (rowsChanged != 0) {
-			return true;
-		}
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public Address updateAddress(Address address) {
-
-		int rowsChanged = jdbcTemplate.update(UPDATE_ADDRESS, address.getCity(), address.getState(), address.getCid(),
-				address.getAid());
-		if (rowsChanged != 0) {
-			return address;
-		}
+	public Address updateAddress(Address adddress) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Address getAddress(int aid) {
-		return jdbcTemplate.queryForObject(GET_ADDRESS, new Object[] { aid },
-				new BeanPropertyRowMapper<Address>(Address.class));
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
